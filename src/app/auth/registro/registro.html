@@ -1,0 +1,78 @@
+<div class="login-container">
+  <div class="login-card">
+
+    <div class="login-header">
+      <div class="logo-icon">E</div>
+      <h1>Registrá tu taller</h1>
+      <p>Completá los datos para empezar</p>
+    </div>
+
+    <form (ngSubmit)="registrar()">
+      <div class="form-group">
+        <label>Nombre del taller</label>
+        <input type="text" [(ngModel)]="datos.nombre" name="nombre" placeholder="Taller Mecánico XYZ" required />
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="datos.email" name="email" placeholder="taller@email.com" required />
+      </div>
+
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input type="text" [(ngModel)]="datos.telefono" name="telefono" placeholder="+591 7xxxxxxx" />
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="datos.password" name="password" placeholder="••••••••" required />
+      </div>
+
+      <div class="form-group">
+        <label>Dirección</label>
+        <input type="text" [(ngModel)]="datos.direccion" name="direccion" placeholder="Av. Principal #123" />
+      </div>
+
+      <div class="form-group">
+        <label>Ubicación del taller</label>
+        <p class="map-hint">Hacé clic en el mapa para marcar la ubicación exacta</p>
+        <div id="mapa-registro" class="mapa"></div>
+        <div class="coords" *ngIf="datos.latitud">
+          Lat: {{ datos.latitud }} — Lng: {{ datos.longitud }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Tipos de servicio</label>
+        <div class="servicios-grid">
+          <button
+            type="button"
+            *ngFor="let s of serviciosDisponibles"
+            [class.activo]="tieneServicio(s)"
+            (click)="toggleServicio(s)"
+            class="servicio-btn"
+          >
+            {{ s }}
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Capacidad máxima de técnicos</label>
+        <input type="number" [(ngModel)]="datos.capacidad_max" name="capacidad_max" min="1" max="20" />
+      </div>
+
+      <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+      <button type="submit" [disabled]="cargando" class="btn-primary">
+        {{ cargando ? 'Registrando...' : 'Crear cuenta' }}
+      </button>
+    </form>
+
+    <div class="login-footer">
+      ¿Ya tenés cuenta?
+      <a routerLink="/auth/login">Iniciá sesión</a>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,108 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <main class="contenido">
+
+    <div class="page-header">
+      <div>
+        <h1>Historial de atenciones</h1>
+        <p>Todos los incidentes gestionados por tu taller</p>
+      </div>
+      <button class="btn-refresh" (click)="cargar()">↻ Actualizar</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-valor">{{ stats.total }}</div>
+        <div class="stat-label">Total gestionados</div>
+        <div class="stat-dot total"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-valor">{{ stats.atendidos }}</div>
+        <div class="stat-label">Atendidos</div>
+        <div class="stat-dot atendido"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-valor">{{ stats.cancelados }}</div>
+        <div class="stat-label">Cancelados</div>
+        <div class="stat-dot cancelado"></div>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros-bar">
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (ngModelChange)="filtrar()"
+        placeholder="Buscar por tipo, descripción..."
+        class="input-busqueda"
+      />
+      <div class="filtro-tabs">
+        <button
+          *ngFor="let f of [
+            {valor: 'todos', label: 'Todos'},
+            {valor: 'atendido', label: 'Atendidos'},
+            {valor: 'en_proceso', label: 'En proceso'},
+            {valor: 'cancelado', label: 'Cancelados'}
+          ]"
+          [class.activo]="filtroEstado === f.valor"
+          (click)="filtroEstado = f.valor; filtrar()"
+          class="filtro-btn"
+        >
+          {{ f.label }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista -->
+    <div class="card">
+      <div class="loading" *ngIf="cargando">Cargando historial...</div>
+
+      <div class="empty" *ngIf="!cargando && incidentesFiltrados.length === 0">
+        <span style="font-size: 32px">📋</span>
+        <p>No hay incidentes que coincidan con el filtro</p>
+      </div>
+
+      <div class="tabla" *ngIf="!cargando && incidentesFiltrados.length > 0">
+        <div class="tabla-header">
+          <span>Tipo</span>
+          <span>Descripción</span>
+          <span>Prioridad</span>
+          <span>Estado</span>
+          <span>Fecha</span>
+          <span>Acciones</span>
+        </div>
+
+        <div class="tabla-fila" *ngFor="let inc of incidentesFiltrados">
+          <div class="tipo-col">
+            <div class="tipo-icon">
+              <span>{{ getTipoIcon(inc.tipo_problema) }}</span>
+            </div>
+            <span class="tipo-texto">{{ inc.tipo_problema || 'Sin clasificar' }}</span>
+          </div>
+
+          <div class="desc-col">
+            <span>{{ inc.descripcion_texto || inc.resumen_ia || 'Sin descripción' | slice:0:60 }}...</span>
+          </div>
+
+          <span class="prioridad-badge" [class]="getPrioridadClass(inc.prioridad)">
+            {{ inc.prioridad }}
+          </span>
+
+          <span class="estado-badge" [class]="getEstadoClass(inc.estado)">
+            {{ inc.estado.replaceAll('_', ' ') }}
+          </span>
+
+          <span class="fecha-col">{{ formatFecha(inc.creado_en) }}</span>
+
+          <a [routerLink]="['/dashboard/incidentes', inc.id]" class="btn-ver">
+            Ver detalle
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>

@@ -1,0 +1,168 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <main class="contenido">
+
+    <div class="page-header">
+      <a routerLink="/dashboard" class="btn-volver">← Volver al dashboard</a>
+    </div>
+
+    <div class="loading" *ngIf="cargando">Cargando incidente...</div>
+
+    <div class="grid" *ngIf="!cargando && incidente">
+
+      <!-- Columna izquierda -->
+      <div class="columna">
+
+        <!-- Info principal -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Incidente</h2>
+            <span class="prioridad-badge" [class]="getPrioridadClass(incidente.prioridad)">
+              {{ incidente.prioridad }}
+            </span>
+          </div>
+
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Estado actual</span>
+              <span class="info-valor estado-badge" [class]="'estado-' + incidente.estado">
+                {{ incidente.estado }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Tipo de problema</span>
+              <span class="info-valor">{{ incidente.tipo_problema || 'Sin clasificar' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Ubicación</span>
+              <span class="info-valor">{{ incidente.latitud }}, {{ incidente.longitud }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Fecha</span>
+              <span class="info-valor">{{ incidente.creado_en | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+
+          <div class="descripcion" *ngIf="incidente.descripcion_texto">
+            <span class="info-label">Descripción del usuario</span>
+            <p>{{ incidente.descripcion_texto }}</p>
+          </div>
+        </div>
+
+        <!-- Técnico asignado -->
+<div class="card" *ngIf="incidente.tecnico">
+  <div class="card-header">
+    <h2>Técnico asignado</h2>
+  </div>
+  <div class="tecnico-detalle">
+    <div class="tecnico-avatar">
+      {{ incidente.tecnico.nombre[0] }}{{ incidente.tecnico.apellido[0] }}
+    </div>
+    <div class="tecnico-datos">
+      <div class="tecnico-nombre">
+        {{ incidente.tecnico.nombre }} {{ incidente.tecnico.apellido }}
+      </div>
+      <div class="tecnico-tel" *ngIf="incidente.tecnico.telefono">
+        📞 {{ incidente.tecnico.telefono }}
+      </div>
+      <span class="estado-tecnico" [class]="incidente.tecnico.estado">
+        {{ incidente.tecnico.estado }}
+      </span>
+    </div>
+  </div>
+  <button class="btn-ubicacion" (click)="actualizarUbicacionTecnico()"
+  *ngIf="incidente.estado === 'en_proceso' && incidente.tecnico_id">
+  📍 Actualizar ubicación del técnico
+</button>
+</div>
+
+        <!-- Resumen IA -->
+        <div class="card card-ia" *ngIf="incidente.resumen_ia || incidente.clasificacion_ia">
+          <div class="card-header">
+            <h2>✦ Análisis de IA</h2>
+          </div>
+          <div class="ia-item" *ngIf="incidente.clasificacion_ia">
+            <span class="info-label">Clasificación</span>
+            <p>{{ incidente.clasificacion_ia }}</p>
+          </div>
+          <div class="ia-item" *ngIf="incidente.resumen_ia">
+            <span class="info-label">Resumen automático</span>
+            <p>{{ incidente.resumen_ia }}</p>
+          </div>
+        </div>
+
+        <!-- Sin IA -->
+        <div class="card card-ia-vacio" *ngIf="!incidente.resumen_ia && !incidente.clasificacion_ia">
+          <div class="card-header">
+            <h2>✦ Análisis de IA</h2>
+          </div>
+          <p class="empty">Este incidente aún no fue analizado por IA</p>
+        </div>
+
+      </div>
+
+      <!-- Columna derecha -->
+      <div class="columna">
+
+        <!-- Actualizar estado -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Actualizar estado</h2>
+          </div>
+
+          <div class="form-group">
+            <label>Nuevo estado</label>
+            <select [(ngModel)]="estadoSeleccionado">
+              <option *ngFor="let e of estados" [value]="e">{{ e }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Nota (opcional)</label>
+            <textarea [(ngModel)]="nota" placeholder="Agregá una nota sobre el cambio de estado..." rows="3"></textarea>
+          </div>
+
+          <div class="success-msg" *ngIf="mensaje">{{ mensaje }}</div>
+
+          <button class="btn-primary" (click)="actualizarEstado()" [disabled]="actualizando">
+            {{ actualizando ? 'Actualizando...' : 'Guardar cambio' }}
+          </button>
+          <div style="margin-top: 12px" *ngIf="incidente.estado === 'en_proceso'">
+          <button class="btn-finalizar" (click)="finalizarServicio()" [disabled]="actualizando">
+            ✓ Marcar como atendido
+          </button>
+         </div>
+        </div>
+
+        <!-- Historial -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Historial de estados</h2>
+          </div>
+
+          <div class="empty" *ngIf="historial.length === 0">Sin historial aún</div>
+
+          <div class="historial-lista">
+            <div class="historial-item" *ngFor="let h of historial">
+              <div class="historial-dot"></div>
+              <div class="historial-info">
+                <div class="historial-estados">
+                  <span class="estado-desde">{{ h.estado_anterior || 'inicio' }}</span>
+                  <span class="historial-flecha">→</span>
+                  <span class="estado-hasta">{{ h.estado_nuevo }}</span>
+                </div>
+                <div class="historial-meta">
+                  {{ h.actor_tipo }} · {{ h.creado_en | date:'dd/MM HH:mm' }}
+                </div>
+                <div class="historial-nota" *ngIf="h.nota">{{ h.nota }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>

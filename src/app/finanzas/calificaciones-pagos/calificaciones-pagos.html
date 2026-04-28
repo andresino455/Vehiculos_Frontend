@@ -1,0 +1,154 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <main class="contenido">
+
+    <div class="page-header">
+      <div>
+        <h1>Calificaciones y pagos</h1>
+        <p>Resumen de tu desempeño y finanzas</p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button
+        [class.activo]="tabActiva === 'calificaciones'"
+        (click)="tabActiva = 'calificaciones'"
+        class="tab-btn">
+        ★ Calificaciones
+      </button>
+      <button
+        [class.activo]="tabActiva === 'pagos'"
+        (click)="tabActiva = 'pagos'"
+        class="tab-btn">
+        $ Pagos y cobros
+      </button>
+    </div>
+
+    <!-- TAB CALIFICACIONES -->
+    <div *ngIf="tabActiva === 'calificaciones'">
+
+      <!-- Resumen -->
+      <div class="resumen-grid" *ngIf="resumenCalif">
+        <div class="resumen-card promedio">
+          <div class="promedio-valor">{{ resumenCalif.promedio }}</div>
+          <div class="estrellas-display">
+            <span *ngFor="let s of [1,2,3,4,5]"
+              [style.color]="s <= resumenCalif.promedio ? '#BA7517' : '#ddd'"
+              style="font-size: 20px">★</span>
+          </div>
+          <div class="promedio-label">Promedio general</div>
+          <div class="total-label">{{ resumenCalif.total }} calificaciones</div>
+        </div>
+
+        <div class="distribucion-card">
+          <div class="dist-titulo">Distribución</div>
+          <div class="dist-fila" *ngFor="let e of [5,4,3,2,1]">
+            <span class="dist-estrella">{{ e }}★</span>
+            <div class="dist-barra-bg">
+              <div class="dist-barra-fill"
+                [style.width.%]="getPorcentaje(resumenCalif.distribucion[e])"
+                [class.verde]="e >= 4"
+                [class.amarillo]="e === 3"
+                [class.rojo]="e <= 2">
+              </div>
+            </div>
+            <span class="dist-count">{{ resumenCalif.distribucion[e] }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista calificaciones -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Todas las calificaciones</h2>
+        </div>
+
+        <div class="loading" *ngIf="cargando">Cargando...</div>
+
+        <div class="empty" *ngIf="!cargando && calificaciones.length === 0">
+          <span style="font-size: 32px">⭐</span>
+          <p>Aún no tenés calificaciones</p>
+        </div>
+
+        <div class="calif-item" *ngFor="let c of calificaciones">
+          <div class="calif-header">
+            <span class="estrellas" [style.color]="getColorEstrella(c.puntuacion)">
+              {{ getEstrellas(c.puntuacion) }}
+            </span>
+            <span class="calif-fecha">{{ formatFecha(c.creado_en) }}</span>
+          </div>
+          <p class="calif-comentario" *ngIf="c.comentario">
+            "{{ c.comentario }}"
+          </p>
+          <p class="calif-sin-comentario" *ngIf="!c.comentario">
+            Sin comentario
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB PAGOS -->
+    <div *ngIf="tabActiva === 'pagos'">
+
+      <!-- Resumen financiero -->
+      <div class="finanzas-grid" *ngIf="resumenPagos">
+        <div class="finanza-card">
+          <div class="finanza-icono bruto">$</div>
+          <div class="finanza-valor">Bs. {{ resumenPagos.total_bruto | number:'1.2-2' }}</div>
+          <div class="finanza-label">Total facturado</div>
+        </div>
+        <div class="finanza-card">
+          <div class="finanza-icono comision">%</div>
+          <div class="finanza-valor rojo">- Bs. {{ resumenPagos.total_comision | number:'1.2-2' }}</div>
+          <div class="finanza-label">Comisión plataforma (10%)</div>
+        </div>
+        <div class="finanza-card destacado">
+          <div class="finanza-icono neto">✓</div>
+          <div class="finanza-valor verde">Bs. {{ resumenPagos.total_neto | number:'1.2-2' }}</div>
+          <div class="finanza-label">Total recibido</div>
+        </div>
+        <div class="finanza-card">
+          <div class="finanza-icono servicios">#</div>
+          <div class="finanza-valor">{{ resumenPagos.total_servicios }}</div>
+          <div class="finanza-label">Servicios cobrados</div>
+        </div>
+      </div>
+
+      <!-- Lista pagos -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Historial de cobros</h2>
+        </div>
+
+        <div class="empty" *ngIf="pagos.length === 0">
+          <span style="font-size: 32px">💰</span>
+          <p>Aún no tenés cobros registrados</p>
+        </div>
+
+        <div class="tabla" *ngIf="pagos.length > 0">
+          <div class="tabla-header">
+            <span>Fecha</span>
+            <span>Total</span>
+            <span>Comisión</span>
+            <span>Recibido</span>
+            <span>Método</span>
+            <span>Estado</span>
+          </div>
+          <div class="tabla-fila" *ngFor="let p of pagos">
+            <span class="fecha-col">{{ formatFecha(p.creado_en) }}</span>
+            <span>Bs. {{ p.monto_total | number:'1.2-2' }}</span>
+            <span class="comision-col">- Bs. {{ p.comision_plataforma | number:'1.2-2' }}</span>
+            <span class="neto-col">Bs. {{ p.monto_taller | number:'1.2-2' }}</span>
+            <span class="metodo-badge">{{ p.metodo_pago || '—' }}</span>
+            <span class="estado-badge" [class]="'pago-' + p.estado">{{ p.estado }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>

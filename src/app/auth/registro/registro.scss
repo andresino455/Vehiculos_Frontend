@@ -1,0 +1,155 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f0;
+  padding: 2rem 1rem;
+}
+
+.login-card {
+  background: white;
+  border-radius: 16px;
+  border: 0.5px solid #e0ddd6;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 480px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .logo-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: #534AB7;
+    color: white;
+    font-size: 22px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+  }
+
+  h1 { font-size: 18px; font-weight: 500; color: #1a1a1a; margin: 0 0 4px; }
+  p { font-size: 13px; color: #888; margin: 0; }
+}
+
+.form-group {
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 6px;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 0.5px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+
+    &:focus { border-color: #534AB7; }
+  }
+}
+
+.mapa {
+  height: 280px;
+  width: 100%;
+  border-radius: 8px;
+  border: 0.5px solid #ddd;
+  overflow: hidden;
+}
+
+.map-hint {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+.coords {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #534AB7;
+  font-weight: 500;
+  background: #EEEDFE;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.servicios-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.servicio-btn {
+  padding: 6px 14px;
+  border: 0.5px solid #ddd;
+  border-radius: 20px;
+  background: white;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: capitalize;
+
+  &.activo {
+    background: #EEEDFE;
+    border-color: #534AB7;
+    color: #534AB7;
+    font-weight: 500;
+  }
+
+  &:hover:not(.activo) { border-color: #999; }
+}
+
+.error-msg {
+  background: #fcebeb;
+  color: #a32d2d;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 1rem;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 11px;
+  background: #534AB7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) { background: #3C3489; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 13px;
+  color: #888;
+
+  a {
+    color: #534AB7;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 4px;
+    &:hover { text-decoration: underline; }
+  }
+}

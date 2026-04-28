@@ -1,0 +1,226 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f5f0;
+}
+
+.contenido {
+  margin-left: 220px;
+  flex: 1;
+  padding: 2rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+
+  h1 { font-size: 20px; font-weight: 500; color: #1a1a1a; margin: 0 0 2px; }
+  p { font-size: 13px; color: #888; margin: 0; }
+}
+
+.btn-refresh {
+  padding: 8px 16px;
+  background: white;
+  border: 0.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  &:hover { background: #f0f0f0; }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: white;
+  border: 0.5px solid #e0ddd6;
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+
+  .stat-valor { font-size: 28px; font-weight: 500; color: #1a1a1a; }
+  .stat-label { font-size: 12px; color: #888; margin-top: 2px; }
+
+  .stat-dot {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+
+    &.total { background: #534AB7; }
+    &.atendido { background: #48bb78; }
+    &.cancelado { background: #e53e3e; }
+  }
+}
+
+.filtros-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.input-busqueda {
+  padding: 9px 14px;
+  border: 0.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+  width: 260px;
+  transition: border-color 0.2s;
+  &:focus { border-color: #534AB7; }
+}
+
+.filtro-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.filtro-btn {
+  padding: 7px 14px;
+  border: 0.5px solid #ddd;
+  border-radius: 20px;
+  background: white;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: #555;
+
+  &.activo {
+    background: #EEEDFE;
+    border-color: #534AB7;
+    color: #534AB7;
+    font-weight: 500;
+  }
+
+  &:hover:not(.activo) { background: #f5f5f0; }
+}
+
+.card {
+  background: white;
+  border: 0.5px solid #e0ddd6;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.loading, .empty {
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
+  padding: 3rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabla-header {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1fr 1fr 1.5fr 0.8fr;
+  gap: 12px;
+  padding: 0 12px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 0.5px solid #eee;
+  margin-bottom: 8px;
+}
+
+.tabla-fila {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1fr 1fr 1.5fr 0.8fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  font-size: 13px;
+
+  &:hover { background: #f9f9f7; }
+}
+
+.tipo-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .tipo-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: #EEEDFE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .tipo-texto {
+    font-size: 13px;
+    color: #1a1a1a;
+    text-transform: capitalize;
+  }
+}
+
+.desc-col {
+  font-size: 12px;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prioridad-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  text-transform: capitalize;
+
+  &.prioridad-alta { background: #fff0f0; color: #c53030; }
+  &.prioridad-media { background: #fffaf0; color: #b7791f; }
+  &.prioridad-baja { background: #f0fff4; color: #276749; }
+}
+
+.estado-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  text-transform: capitalize;
+
+  &.estado-atendido { background: #f0fff4; color: #276749; }
+  &.estado-cancelado { background: #fff0f0; color: #c53030; }
+  &.estado-proceso { background: #EEEDFE; color: #534AB7; }
+  &.estado-pendiente { background: #fffaf0; color: #b7791f; }
+}
+
+.fecha-col {
+  font-size: 12px;
+  color: #888;
+}
+
+.btn-ver {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 0.5px solid #ddd;
+  text-decoration: none;
+  color: #555;
+  transition: all 0.15s;
+  text-align: center;
+  &:hover { background: #f0f0f0; }
+}

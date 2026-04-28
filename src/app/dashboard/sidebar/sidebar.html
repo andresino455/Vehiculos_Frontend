@@ -1,0 +1,32 @@
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-icon">E</div>
+    <div>
+      <div class="logo-title">Emergencias</div>
+      <div class="logo-sub">Panel de taller</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a routerLink="/dashboard" routerLinkActive="activo" [routerLinkActiveOptions]="{exact:true}" class="nav-item">
+      <span class="nav-icon">▦</span>
+      <span>Dashboard</span>
+    </a>
+    <a routerLink="/dashboard/tecnicos" routerLinkActive="activo" class="nav-item">
+      <span class="nav-icon">👷</span>
+      <span>Técnicos</span>
+    </a>
+    <a routerLink="/dashboard/historial" routerLinkActive="activo" class="nav-item">
+  <span class="nav-icon">📋</span>
+  <span>Historial</span>
+</a>
+<a routerLink="/dashboard/finanzas" routerLinkActive="activo" class="nav-item">
+  <span class="nav-icon">💰</span>
+  <span>Finanzas</span>
+</a>
+  </nav>
+
+  <button class="btn-logout" (click)="logout()">
+    <span>⎋</span> Cerrar sesión
+  </button>
+</div>

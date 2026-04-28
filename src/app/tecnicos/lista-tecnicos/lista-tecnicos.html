@@ -1,0 +1,108 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <main class="contenido">
+
+    <div class="page-header">
+      <div>
+        <h1>Técnicos</h1>
+        <p>Gestioná el equipo de tu taller</p>
+      </div>
+      <button class="btn-agregar" (click)="mostrarFormulario = !mostrarFormulario">
+        {{ mostrarFormulario ? '✕ Cancelar' : '+ Agregar técnico' }}
+      </button>
+    </div>
+
+    <!-- Stats rápidas -->
+    <div class="stats-row">
+      <div class="stat-chip">
+        <span class="chip-dot disponible"></span>
+        {{ totalDisponibles }} disponibles
+      </div>
+      <div class="stat-chip">
+        <span class="chip-dot ocupado"></span>
+        {{ totalOcupados }} ocupados
+      </div>
+      <div class="stat-chip">
+        <span class="chip-dot total"></span>
+        {{ tecnicos.length }} total
+      </div>
+    </div>
+
+    <!-- Mensaje éxito -->
+    <div class="success-msg" *ngIf="mensaje">{{ mensaje }}</div>
+
+    <!-- Formulario nuevo técnico -->
+    <div class="card formulario" *ngIf="mostrarFormulario">
+      <h2>Nuevo técnico</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="nuevoTecnico.nombre" placeholder="Juan" />
+        </div>
+        <div class="form-group">
+          <label>Apellido</label>
+          <input type="text" [(ngModel)]="nuevoTecnico.apellido" placeholder="Pérez" />
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="text" [(ngModel)]="nuevoTecnico.telefono" placeholder="+591 7xxxxxxx" />
+        </div>
+      </div>
+      <div class="error-msg" *ngIf="error">{{ error }}</div>
+      <button class="btn-primary" (click)="agregarTecnico()" [disabled]="guardando || !nuevoTecnico.nombre || !nuevoTecnico.apellido">
+        {{ guardando ? 'Guardando...' : 'Guardar técnico' }}
+      </button>
+    </div>
+
+    <!-- Lista técnicos -->
+    <div class="card">
+      <div class="loading" *ngIf="cargando">Cargando técnicos...</div>
+
+      <div class="empty" *ngIf="!cargando && tecnicos.length === 0">
+        No hay técnicos registrados. Agregá el primero.
+      </div>
+
+      <div class="tabla" *ngIf="!cargando && tecnicos.length > 0">
+        <div class="tabla-header">
+          <span>Técnico</span>
+          <span>Teléfono</span>
+          <span>Estado</span>
+          <span>Ubicación</span>
+          <span>Acciones</span>
+        </div>
+
+        <div class="tabla-fila" *ngFor="let t of tecnicos">
+          <div class="tecnico-nombre-col">
+            <div class="avatar">{{ t.nombre[0] }}{{ t.apellido[0] }}</div>
+            <div>
+              <div class="nombre">{{ t.nombre }} {{ t.apellido }}</div>
+            </div>
+          </div>
+
+          <span class="telefono">{{ t.telefono || '—' }}</span>
+
+          <span class="estado-badge" [class]="getEstadoClass(t.estado)">
+            {{ t.estado }}
+          </span>
+
+          <span class="ubicacion">
+            <span *ngIf="t.latitud_actual">
+              {{ t.latitud_actual | number:'1.2-4' }}, {{ t.longitud_actual | number:'1.2-4' }}
+            </span>
+            <span *ngIf="!t.latitud_actual" class="sin-ubicacion">Sin ubicación</span>
+          </span>
+
+          <div class="acciones">
+            <select (change)="cambiarEstado(t, $any($event.target).value)" [value]="t.estado" class="select-estado">
+              <option value="disponible">Disponible</option>
+              <option value="ocupado">Ocupado</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>

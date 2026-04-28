@@ -1,0 +1,299 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f5f0;
+}
+
+.contenido {
+  margin-left: 220px;
+  flex: 1;
+  padding: 2rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+
+  h1 { font-size: 20px; font-weight: 500; color: #1a1a1a; margin: 0 0 2px; }
+  p { font-size: 13px; color: #888; margin: 0; }
+}
+
+.btn-refresh {
+  padding: 8px 16px;
+  background: white;
+  border: 0.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  &:hover { background: #f0f0f0; }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: white;
+  border: 0.5px solid #e0ddd6;
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+
+  .stat-valor { font-size: 28px; font-weight: 500; color: #1a1a1a; }
+  .stat-label { font-size: 12px; color: #888; margin-top: 2px; }
+
+  .stat-dot {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+
+    &.pendiente { background: #f6ad55; }
+    &.proceso { background: #534AB7; }
+    &.tecnico { background: #48bb78; }
+    &.disponible { background: #1D9E75; }
+  }
+}
+
+.grid-dos-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border: 0.5px solid #e0ddd6;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  h2 { font-size: 15px; font-weight: 500; color: #1a1a1a; margin: 0; }
+}
+
+.badge-count {
+  background: #EEEDFE;
+  color: #534AB7;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.loading, .empty {
+  font-size: 13px;
+  color: #aaa;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.incidente-item {
+  border: 0.5px solid #eee;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+
+  &:hover { border-color: #534AB7; }
+}
+
+.incidente-top {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.tipo-badge {
+  font-size: 11px;
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 20px;
+  color: #555;
+  text-transform: capitalize;
+}
+
+.prioridad-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+  text-transform: capitalize;
+
+  &.prioridad-alta { background: #fff0f0; color: #c53030; }
+  &.prioridad-media { background: #fffaf0; color: #b7791f; }
+  &.prioridad-baja { background: #f0fff4; color: #276749; }
+}
+
+.incidente-desc {
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 4px;
+}
+
+.incidente-coords {
+  font-size: 11px;
+  color: #aaa;
+  margin-bottom: 8px;
+}
+
+.incidente-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.estado-badge {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+
+  &.estado-pendiente { background: #fffaf0; color: #b7791f; }
+  &.estado-proceso { background: #EEEDFE; color: #534AB7; }
+  &.estado-atendido { background: #f0fff4; color: #276749; }
+}
+
+.incidente-acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-ver {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 0.5px solid #ddd;
+  text-decoration: none;
+  color: #555;
+  transition: all 0.15s;
+  &:hover { background: #f0f0f0; }
+}
+
+.btn-aceptar {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #534AB7;
+  color: white;
+  cursor: pointer;
+  transition: background 0.15s;
+  &:hover { background: #3C3489; }
+}
+
+.mapa {
+  height: 220px;
+  border-radius: 8px;
+  border: 0.5px solid #eee;
+  margin-bottom: 12px;
+}
+
+.tecnicos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.tecnico-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border: 0.5px solid #eee;
+  border-radius: 8px;
+}
+
+.tecnico-info {
+  display: flex;
+  flex-direction: column;
+
+  .tecnico-nombre { font-size: 13px; font-weight: 500; color: #1a1a1a; }
+  .tecnico-tel { font-size: 11px; color: #aaa; }
+}
+
+.estado-tecnico {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  text-transform: capitalize;
+
+  &.disponible { background: #f0fff4; color: #276749; }
+  &.ocupado { background: #EEEDFE; color: #534AB7; }
+  &.inactivo { background: #f0f0f0; color: #999; }
+}
+
+.notif-panel {
+  background: white;
+  border: 0.5px solid #c4bef5;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.notif-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #534AB7;
+  flex-shrink: 0;
+  margin-top: 4px;
+
+  &.rojo { background: #D85A30; }
+}
+
+.notif-titulo {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.notif-msg {
+  font-size: 12px;
+  color: #888;
+}
+.ia-resumen {
+  font-size: 12px;
+  color: #534AB7;
+  background: #EEEDFE;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+
+  .ia-icon { font-size: 11px; }
+}
+
+.en-proceso-label {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: #E1F5EE;
+  color: #0F6E56;
+  font-weight: 500;
+}

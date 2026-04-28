@@ -1,0 +1,128 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <main class="contenido">
+
+    <div class="page-header">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Bienvenido, {{ perfil?.nombre || 'Taller' }}</p>
+      </div>
+      <button class="btn-refresh" (click)="cargarDatos()">↻ Actualizar</button>
+    </div>
+
+    <div class="notif-panel" *ngIf="notificaciones.length > 0">
+  <div class="notif-item" *ngFor="let n of notificaciones.slice(0, 3)">
+    <span class="notif-dot" [class.rojo]="n.tipo === 'nuevo_incidente'"></span>
+    <div>
+      <div class="notif-titulo">{{ n.titulo }}</div>
+      <div class="notif-msg">{{ n.mensaje }}</div>
+    </div>
+  </div>
+</div>
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-valor">{{ stats.pendientes }}</div>
+        <div class="stat-label">Pendientes</div>
+        <div class="stat-dot pendiente"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-valor">{{ stats.enProceso }}</div>
+        <div class="stat-label">En proceso</div>
+        <div class="stat-dot proceso"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-valor">{{ tecnicos.length }}</div>
+        <div class="stat-label">Técnicos</div>
+        <div class="stat-dot tecnico"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-valor">{{ tecnicosDisponibles }}</div>
+        <div class="stat-label">Disponibles</div>
+        <div class="stat-dot disponible"></div>
+      </div>
+    </div>
+
+    <div class="grid-dos-col">
+
+<!-- Incidentes pendientes -->
+<div class="card">
+  <div class="card-header">
+    <h2>Solicitudes</h2>
+    <span class="badge-count">{{ incidentesPendientes.length }}</span>
+  </div>
+
+  <div class="loading" *ngIf="cargando">Cargando...</div>
+
+  <div class="empty" *ngIf="!cargando && incidentesPendientes.length === 0">
+    No hay solicitudes activas por ahora
+  </div>
+
+  <div class="incidente-item" *ngFor="let inc of incidentesPendientes">
+    <div class="incidente-top">
+      <span class="tipo-badge">{{ inc.tipo_problema || 'Sin clasificar' }}</span>
+      <span class="prioridad-badge" [class]="getPrioridadClass(inc.prioridad)">
+        {{ inc.prioridad }}
+      </span>
+    </div>
+
+    <div class="incidente-desc">{{ inc.descripcion_texto || 'Sin descripción' }}</div>
+
+    <div class="incidente-coords">
+      📍 {{ inc.latitud | number:'1.4-4' }}, {{ inc.longitud | number:'1.4-4' }}
+    </div>
+
+    <!-- Resumen IA si existe -->
+    <div class="ia-resumen" *ngIf="inc.resumen_ia">
+      <span class="ia-icon">✦</span> {{ inc.resumen_ia }}
+    </div>
+
+    <div class="incidente-footer">
+      <span class="estado-badge" [class]="getEstadoClass(inc.estado)">
+        {{ inc.estado }}
+      </span>
+      <div class="incidente-acciones">
+        <a [routerLink]="['/dashboard/incidentes', inc.id]" class="btn-ver">
+          Ver detalle
+        </a>
+        <button
+          class="btn-aceptar"
+          (click)="aceptarIncidente(inc.id)"
+          *ngIf="inc.estado === 'pendiente'"
+        >
+          Aceptar
+        </button>
+        <span class="en-proceso-label" *ngIf="inc.estado === 'en_proceso'">
+          En atención
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Mapa técnicos -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Ubicación de técnicos</h2>
+          <span class="badge-count">{{ tecnicos.length }}</span>
+        </div>
+        <div id="mapa-tecnicos" class="mapa"></div>
+        <div class="tecnicos-lista">
+          <div class="tecnico-item" *ngFor="let t of tecnicos">
+            <div class="tecnico-info">
+              <span class="tecnico-nombre">{{ t.nombre }} {{ t.apellido }}</span>
+              <span class="tecnico-tel">{{ t.telefono }}</span>
+            </div>
+            <span class="estado-tecnico" [class]="t.estado">{{ t.estado }}</span>
+          </div>
+          <div class="empty" *ngIf="tecnicos.length === 0">
+            No hay técnicos registrados
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>

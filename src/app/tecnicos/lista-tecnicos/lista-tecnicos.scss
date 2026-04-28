@@ -1,0 +1,239 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f5f0;
+}
+
+.contenido {
+  margin-left: 220px;
+  flex: 1;
+  padding: 2rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+
+  h1 { font-size: 20px; font-weight: 500; color: #1a1a1a; margin: 0 0 2px; }
+  p { font-size: 13px; color: #888; margin: 0; }
+}
+
+.btn-agregar {
+  padding: 9px 18px;
+  background: #534AB7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  &:hover { background: #3C3489; }
+}
+
+.stats-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1.2rem;
+}
+
+.stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: white;
+  border: 0.5px solid #e0ddd6;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #555;
+}
+
+.chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  &.disponible { background: #48bb78; }
+  &.ocupado { background: #534AB7; }
+  &.total { background: #aaa; }
+}
+
+.success-msg {
+  background: #f0fff4;
+  color: #276749;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 1rem;
+}
+
+.card {
+  background: white;
+  border: 0.5px solid #e0ddd6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.formulario {
+  h2 { font-size: 15px; font-weight: 500; margin: 0 0 1rem; }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 5px;
+  }
+
+  input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 0.5px solid #ddd;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+    &:focus { border-color: #534AB7; }
+  }
+}
+
+.error-msg {
+  background: #fcebeb;
+  color: #a32d2d;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 1rem;
+}
+
+.btn-primary {
+  padding: 9px 20px;
+  background: #534AB7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover:not(:disabled) { background: #3C3489; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.loading, .empty {
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
+  padding: 2rem 0;
+}
+
+.tabla {
+  width: 100%;
+}
+
+.tabla-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr 1.2fr;
+  gap: 12px;
+  padding: 0 12px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 0.5px solid #eee;
+  margin-bottom: 8px;
+}
+
+.tabla-fila {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr 1.2fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background 0.15s;
+
+  &:hover { background: #f9f9f7; }
+}
+
+.tecnico-nombre-col {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #EEEDFE;
+  color: #534AB7;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.nombre {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.telefono {
+  font-size: 13px;
+  color: #666;
+}
+
+.estado-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  text-transform: capitalize;
+
+  &.estado-disponible { background: #f0fff4; color: #276749; }
+  &.estado-ocupado { background: #EEEDFE; color: #534AB7; }
+  &.estado-inactivo { background: #f0f0f0; color: #999; }
+}
+
+.ubicacion {
+  font-size: 12px;
+  color: #666;
+}
+
+.sin-ubicacion {
+  color: #ccc;
+  font-style: italic;
+}
+
+.select-estado {
+  padding: 6px 10px;
+  border: 0.5px solid #ddd;
+  border-radius: 6px;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+  background: white;
+  color: #444;
+  transition: border-color 0.2s;
+  &:focus { border-color: #534AB7; }
+}
