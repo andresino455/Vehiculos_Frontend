@@ -34,10 +34,10 @@
               <span class="info-label">Tipo de problema</span>
               <span class="info-valor">{{ incidente.tipo_problema || 'Sin clasificar' }}</span>
             </div>
-            <div class="info-item">
-              <span class="info-label">Ubicación</span>
-              <span class="info-valor">{{ incidente.latitud }}, {{ incidente.longitud }}</span>
-            </div>
+<div class="info-item" style="grid-column: 1 / -1">
+  <span class="info-label">Ubicación del incidente</span>
+  <div id="mapa-detalle" class="mapa-detalle"></div>
+</div>
             <div class="info-item">
               <span class="info-label">Fecha</span>
               <span class="info-valor">{{ incidente.creado_en | date:'dd/MM/yyyy HH:mm' }}</span>
@@ -50,11 +50,12 @@
           </div>
         </div>
 
-        <!-- Técnico asignado -->
+          <!-- Técnico asignado -->
 <div class="card" *ngIf="incidente.tecnico">
   <div class="card-header">
     <h2>Técnico asignado</h2>
   </div>
+
   <div class="tecnico-detalle">
     <div class="tecnico-avatar">
       {{ incidente.tecnico.nombre[0] }}{{ incidente.tecnico.apellido[0] }}
@@ -71,10 +72,38 @@
       </span>
     </div>
   </div>
-  <button class="btn-ubicacion" (click)="actualizarUbicacionTecnico()"
-  *ngIf="incidente.estado === 'en_proceso' && incidente.tecnico_id">
-  📍 Actualizar ubicación del técnico
-</button>
+<!-- Rastreo GPS -->
+<div class="rastreo-section" *ngIf="incidente.estado === 'en_proceso'">
+  <div class="rastreo-titulo">Compartir ubicación del técnico</div>
+
+  <div class="rastreo-info" *ngIf="!rastreando">
+    <p>Activá el rastreo para que el cliente pueda ver la ubicación del técnico en tiempo real.</p>
+  </div>
+
+  <div class="rastreo-activo" *ngIf="rastreando">
+    <div class="rastreo-dot"></div>
+    <span>Compartiendo ubicación en tiempo real...</span>
+  </div>
+
+  <div class="success-msg" *ngIf="mensajeUbicacion && !mensajeUbicacion.includes('Error')">
+    {{ mensajeUbicacion }}
+  </div>
+  <div class="error-msg" *ngIf="mensajeUbicacion && mensajeUbicacion.includes('Error')">
+    {{ mensajeUbicacion }}
+  </div>
+
+  <div class="rastreo-botones">
+    <button class="btn-rastreo-iniciar" *ngIf="!rastreando" (click)="iniciarActualizacionAutomatica()">
+      📍 Iniciar rastreo GPS
+    </button>
+    <button class="btn-rastreo-detener" *ngIf="rastreando" (click)="detenerRastreo()">
+      ⏹ Detener rastreo
+    </button>
+    <button class="btn-ubicacion-manual" (click)="actualizarUbicacionTecnico()" [disabled]="actualizandoUbicacion">
+      {{ actualizandoUbicacion ? 'Actualizando...' : '↻ Actualizar una vez' }}
+    </button>
+    </div>
+    </div>
 </div>
 
         <!-- Resumen IA -->

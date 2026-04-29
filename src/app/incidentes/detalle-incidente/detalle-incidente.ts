@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { SidebarComponent } from '../../dashboard/sidebar/sidebar';
 import { IncidenteService } from '../../services/incidente';
 import { environment } from '../../../environments/environment';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-detalle-incidente',
@@ -14,7 +15,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './detalle-incidente.html',
   styleUrls: ['./detalle-incidente.scss']
 })
-export class DetalleIncidenteComponent implements OnInit {
+export class DetalleIncidenteComponent implements OnInit, AfterViewInit {
 
   incidente: any = null;
   historial: any[] = [];
@@ -25,6 +26,12 @@ export class DetalleIncidenteComponent implements OnInit {
   analizando = false;
   mensaje = '';
   mensajeIA = '';
+  actualizandoUbicacion = false;
+  mensajeUbicacion = '';
+  rastreando = false;
+  private _watchId: number | null = null;
+  private mapaDetalle!: L.Map;
+
 
   estados = ['pendiente', 'en_proceso', 'atendido', 'cancelado'];
 
@@ -48,6 +55,7 @@ export class DetalleIncidenteComponent implements OnInit {
         this.estadoSeleccionado = inc.estado;
         this.cargando = false;
         this.cdr.detectChanges();
+        setTimeout(() => this.iniciarMapaDetalle(), 200);
       },
       error: (err) => {
         console.error('Error cargando incidente:', err);
@@ -139,9 +147,13 @@ export class DetalleIncidenteComponent implements OnInit {
     return clases[prioridad] || 'prioridad-media';
   }
 
-  actualizarUbicacionTecnico() {
-    if (!this.incidente.tecnico_id) return;
-    navigator.geolocation.getCurrentPosition(pos => {
+
+actualizarUbicacionTecnico() {
+  if (!this.incidente?.tecnico_id) return;
+  this.actualizandoUbicacion = true;
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
       this.http.patch(
         `${environment.apiUrl}/tecnicos/${this.incidente.tecnico_id}/ubicacion`,
         {
@@ -149,9 +161,89 @@ export class DetalleIncidenteComponent implements OnInit {
           longitud: pos.coords.longitude
         }
       ).subscribe({
-        next: () => console.log('Ubicación actualizada'),
-        error: (e) => console.error(e)
+        next: () => {
+          this.mensajeUbicacion = `Ubicación actualizada: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+          this.actualizandoUbicacion = false;
+          this.cdr.detectChanges();
+          setTimeout(() => { this.mensajeUbicacion = ''; this.cdr.detectChanges(); }, 3000);
+        },
+        error: () => {
+          this.mensajeUbicacion = 'Error al actualizar ubicación';
+          this.actualizandoUbicacion = false;
+          this.cdr.detectChanges();
+        }
       });
-    });
+    },
+    (err) => {
+      this.mensajeUbicacion = 'No se pudo obtener la ubicación del navegador';
+      this.actualizandoUbicacion = false;
+      this.cdr.detectChanges();
+    }
+  );
+}
+
+iniciarActualizacionAutomatica() {
+  if (!this.incidente?.tecnico_id) return;
+  this._watchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      this.http.patch(
+        `${environment.apiUrl}/tecnicos/${this.incidente.tecnico_id}/ubicacion`,
+        {
+          latitud: pos.coords.latitude,
+          longitud: pos.coords.longitude
+        }
+      ).subscribe();
+    },
+    (err) => console.error('[GPS]', err),
+    { enableHighAccuracy: true, maximumAge: 5000 }
+  );
+  this.rastreando = true;
+  this.cdr.detectChanges();
+}
+
+detenerRastreo() {
+  if (this._watchId !== null) {
+    navigator.geolocation.clearWatch(this._watchId);
+    this._watchId = null;
   }
+  this.rastreando = false;
+  this.cdr.detectChanges();
+}
+
+ngOnDestroy() {
+  this.detenerRastreo();
+}
+ngAfterViewInit() {
+  if (this.incidente) {
+    this.iniciarMapaDetalle();
+  }
+}
+
+iniciarMapaDetalle() {
+  const el = document.getElementById('mapa-detalle');
+  if (!el || this.mapaDetalle) return;
+
+  this.mapaDetalle = L.map('mapa-detalle').setView(
+    [this.incidente.latitud, this.incidente.longitud], 15
+  );
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(this.mapaDetalle);
+
+  L.marker(
+    [this.incidente.latitud, this.incidente.longitud],
+    {
+      icon: L.icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+      })
+    }
+  ).addTo(this.mapaDetalle)
+   .bindPopup('Ubicación del incidente')
+   .openPopup();
+}  
+
 }

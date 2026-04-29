@@ -312,3 +312,122 @@
   transition: background 0.15s;
   &:hover { background: #C6EDE0; }
 }
+.rastreo-section {
+  margin-top: 16px;
+  border-top: 0.5px solid #eee;
+  padding-top: 14px;
+}
+
+.rastreo-titulo {
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.rastreo-info p {
+  font-size: 12px;
+  color: #888;
+  margin: 0 0 10px;
+}
+
+.rastreo-activo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0fff4;
+  border: 0.5px solid #1D9E75;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #0F6E56;
+  font-weight: 500;
+}
+
+.rastreo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1D9E75;
+  animation: pulsar 1s infinite;
+}
+
+@keyframes pulsar {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.rastreo-botones {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-rastreo-iniciar {
+  padding: 8px 16px;
+  background: #1D9E75;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #0F6E56;
+  }
+}
+
+.btn-rastreo-detener {
+  padding: 8px 16px;
+  background: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #c53030;
+  }
+}
+
+.btn-ubicacion-manual {
+  padding: 8px 16px;
+  background: white;
+  color: #534AB7;
+  border: 0.5px solid #534AB7;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #EEEDFE;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.mapa-detalle {
+  height: 200px;
+  width: 100%;
+  border-radius: 8px;
+  border: 0.5px solid #eee;
+  margin-top: 8px;
+}
