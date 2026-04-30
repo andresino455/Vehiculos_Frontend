@@ -184,19 +184,27 @@ actualizarUbicacionTecnico() {
 
 iniciarActualizacionAutomatica() {
   if (!this.incidente?.tecnico_id) return;
+
   this._watchId = navigator.geolocation.watchPosition(
     (pos) => {
+      // Solo enviar si tenemos coordenadas válidas
+      if (!pos.coords.latitude || !pos.coords.longitude) return;
+
       this.http.patch(
         `${environment.apiUrl}/tecnicos/${this.incidente.tecnico_id}/ubicacion`,
         {
           latitud: pos.coords.latitude,
           longitud: pos.coords.longitude
         }
-      ).subscribe();
+      ).subscribe({
+        next: () => console.log('[GPS] Ubicación actualizada'),
+        error: (e) => console.error('[GPS] Error:', e)
+      });
     },
     (err) => console.error('[GPS]', err),
-    { enableHighAccuracy: true, maximumAge: 5000 }
+    { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
   );
+
   this.rastreando = true;
   this.cdr.detectChanges();
 }
