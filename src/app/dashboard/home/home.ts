@@ -31,6 +31,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   cargando = true;
   mapaListo = false;
   notificaciones: any[] = [];
+  private pollingInterval: any;
 
   private map!: L.Map;
   private marcadores: L.Marker[] = [];
@@ -45,10 +46,39 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
-    this.cargarDatos();
-  }
+ngOnInit() {
+  this.cargarDatos();
+  this.solicitarPermisoNotificaciones();
+  this.pollingInterval = setInterval(() => {
+    const cantidadAnterior = this.incidentesPendientes.filter(i => i.estado === 'pendiente').length;
+    this.incidenteService.getDisponibles().subscribe({
+      next: (incidentes) => {
+        const cantidadNueva = incidentes.filter((i: any) => i.estado === 'pendiente').length;
+        if (cantidadNueva > cantidadAnterior) {
+          this.mostrarNotificacionNavegador('Nueva emergencia', 'Hay un nuevo incidente pendiente');
+        }
+        this.incidentesPendientes = incidentes;
+        this.cdr.detectChanges();
+      },
+      error: () => {}
+    });
+  }, 15000);
+}
 
+solicitarPermisoNotificaciones() {
+  if ('Notification' in window) {
+    Notification.requestPermission();
+  }
+}
+
+mostrarNotificacionNavegador(titulo: string, mensaje: string) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification(titulo, {
+      body: mensaje,
+      icon: '/favicon.ico'
+    });
+  }
+}
   ngAfterViewInit() {
     setTimeout(() => {
       this.iniciarMapa();
@@ -58,6 +88,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.wsSub) this.wsSub.unsubscribe();
+    if (this.pollingInterval) clearInterval(this.pollingInterval);
   }
 
   cargarDatos() {
