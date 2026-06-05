@@ -1,0 +1,146 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <main class="contenido">
+
+    <div class="page-header">
+      <div>
+        <h1>Dashboard KPIs</h1>
+        <p>Indicadores operacionales en tiempo real</p>
+      </div>
+      <button class="btn-refresh" (click)="cargar()">↻ Actualizar</button>
+    </div>
+
+    <div class="loading" *ngIf="cargando">Cargando indicadores...</div>
+
+    <div *ngIf="!cargando && kpis">
+
+      <!-- KPIs principales -->
+      <div class="kpi-grid">
+
+        <div class="kpi-card">
+          <div class="kpi-icono" style="background:#EEEDFE;color:#534AB7">⏱</div>
+          <div class="kpi-valor">{{ kpis.tiempo_promedio_asignacion_min | number:'1.0-1' }} min</div>
+          <div class="kpi-label">Tiempo promedio de asignación</div>
+          <div class="kpi-desc">Entre reporte y taller asignado</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icono" style="background:#E1F5EE;color:#085041">🚗</div>
+          <div class="kpi-valor">{{ kpis.tiempo_promedio_llegada_min | number:'1.0-1' }} min</div>
+          <div class="kpi-label">Tiempo promedio de llegada</div>
+          <div class="kpi-desc">Entre asignación y llegada</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icono" style="background:#FAEEDA;color:#633806">📊</div>
+          <div class="kpi-valor">{{ kpis.tasa_cancelacion_pct }}%</div>
+          <div class="kpi-label">Tasa de cancelación</div>
+          <div class="kpi-desc">{{ kpis.total_cancelados }} de {{ kpis.total_incidentes }} servicios</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icono" [style.background]="getSlaColor(kpis.sla_cumplimiento_pct) + '22'"
+               [style.color]="getSlaColor(kpis.sla_cumplimiento_pct)">✓</div>
+          <div class="kpi-valor" [style.color]="getSlaColor(kpis.sla_cumplimiento_pct)">
+            {{ kpis.sla_cumplimiento_pct }}%
+          </div>
+          <div class="kpi-label">Cumplimiento SLA</div>
+          <div class="kpi-desc">{{ getSlaLabel(kpis.sla_cumplimiento_pct) }} (meta: ≤60 min)</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icono" style="background:#FAEEDA;color:#633806">★</div>
+          <div class="kpi-valor">{{ kpis.calificacion_promedio | number:'1.1-1' }}</div>
+          <div class="kpi-label">Calificación promedio</div>
+          <div class="kpi-desc">{{ kpis.total_calificaciones }} calificaciones recibidas</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icono" style="background:#E1F5EE;color:#085041">$</div>
+          <div class="kpi-valor">Bs. {{ kpis.ingresos_mes_actual | number:'1.0-2' }}</div>
+          <div class="kpi-label">Ingresos este mes</div>
+          <div class="kpi-desc">{{ kpis.pagos_mes_actual }} pagos recibidos</div>
+        </div>
+
+      </div>
+
+      <!-- Gráficos -->
+      <div class="graficos-grid">
+
+        <!-- Torta por tipo -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Incidentes por tipo</h2>
+          </div>
+          <div class="torta-container">
+            <canvas id="grafico-tipos" width="200" height="200"></canvas>
+            <div class="leyenda">
+              <div class="leyenda-item" *ngFor="let t of kpis.incidentes_por_tipo">
+                <span class="leyenda-dot" [style.background]="getTipoColor(t.tipo)"></span>
+                <span class="leyenda-label">{{ t.tipo }}</span>
+                <span class="leyenda-val">{{ t.total }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="empty" *ngIf="!kpis.incidentes_por_tipo?.length">Sin datos</div>
+        </div>
+
+        <!-- Barras por día -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Incidentes últimos 7 días</h2>
+          </div>
+          <canvas id="grafico-dias" width="400" height="200"
+            *ngIf="kpis.incidentes_por_dia?.length"></canvas>
+          <div class="empty" *ngIf="!kpis.incidentes_por_dia?.length">Sin datos</div>
+        </div>
+
+      </div>
+
+      <!-- Estados y zonas -->
+      <div class="graficos-grid">
+
+        <!-- Estados -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Distribución por estado</h2>
+          </div>
+          <div class="estado-lista">
+            <div class="estado-fila" *ngFor="let e of kpis.incidentes_por_estado">
+              <span class="estado-nombre">{{ e.estado.replaceAll('_', ' ') }}</span>
+              <div class="barra-bg">
+                <div class="barra-fill"
+                  [style.width.%]="(e.total / kpis.total_incidentes) * 100">
+                </div>
+              </div>
+              <span class="estado-num">{{ e.total }}</span>
+            </div>
+          </div>
+          <div class="empty" *ngIf="!kpis.incidentes_por_estado?.length">Sin datos</div>
+        </div>
+
+        <!-- Zonas -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Zonas con más incidentes</h2>
+          </div>
+          <div class="zona-lista">
+            <div class="zona-fila" *ngFor="let z of kpis.zonas_mas_incidentes; let i = index">
+              <span class="zona-rank">{{ i + 1 }}</span>
+              <div class="zona-coords">
+                <span class="zona-lat">Lat: {{ z.lat }}</span>
+                <span class="zona-lng">Lng: {{ z.lng }}</span>
+              </div>
+              <span class="zona-total">{{ z.total }} incidentes</span>
+            </div>
+          </div>
+          <div class="empty" *ngIf="!kpis.zonas_mas_incidentes?.length">Sin datos</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+</div>

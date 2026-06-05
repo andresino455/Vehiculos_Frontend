@@ -39,6 +39,14 @@ export const routes: Routes = [
   path: 'finanzas',
   loadComponent: () => import('./finanzas/calificaciones-pagos/calificaciones-pagos').then(m => m.CalificacionesPagosComponent)
 },
+{
+  path: 'kpis',
+  loadComponent: () => import('./kpis/dashboard-kpis/dashboard-kpis').then(m => m.DashboardKpisComponent)
+},
+{
+  path: 'tenants',
+  loadComponent: () => import('./admin/tenants/tenants').then(m => m.TenantsComponent)
+},
     ]
   },
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },

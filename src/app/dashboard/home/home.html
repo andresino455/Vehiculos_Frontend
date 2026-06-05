@@ -93,6 +93,9 @@
         >
           Aceptar
         </button>
+        <button class="btn-rechazar" (click)="rechazarIncidente(inc.id)" *ngIf="inc.estado === 'buscando_taller'">
+          Rechazar
+        </button>
         <span class="en-proceso-label" *ngIf="inc.estado === 'en_proceso'">
           En atención
         </span>

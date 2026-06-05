@@ -31,10 +31,19 @@ export class DetalleIncidenteComponent implements OnInit, AfterViewInit {
   rastreando = false;
   private _watchId: number | null = null;
   private mapaDetalle!: L.Map;
+  mostrarFormCotizacion = false;
+  cotizacion = { descripcion: '', monto_estimado: 0, tiempo_estimado_horas: 1 };
+  enviandoCotizacion = false;
+  mensajeCotizacion = '';
 
-
-  estados = ['pendiente', 'en_proceso', 'atendido', 'cancelado'];
-
+estados = [
+  'buscando_taller',
+  'taller_asignado', 
+  'en_camino',
+  'en_atencion',
+  'finalizado',
+  'cancelado'
+];
   constructor(
     private route: ActivatedRoute,
     private incidenteService: IncidenteService,
@@ -96,27 +105,25 @@ export class DetalleIncidenteComponent implements OnInit, AfterViewInit {
     });
   }
 
-  finalizarServicio() {
-    this.actualizando = true;
-    this.incidenteService.actualizarEstado(
-      this.incidente.id,
-      'atendido',
-      'Servicio finalizado por el taller'
-    ).subscribe({
-      next: () => {
-        this.mensaje = 'Servicio marcado como atendido';
-        this.cargarIncidente(this.incidente.id);
-        this.actualizando = false;
-        this.cdr.detectChanges();
-        setTimeout(() => { this.mensaje = ''; this.cdr.detectChanges(); }, 3000);
-      },
-      error: () => {
-        this.mensaje = 'Error al finalizar el servicio';
-        this.actualizando = false;
-        this.cdr.detectChanges();
-      }
-    });
-  }
+finalizarServicio() {
+  this.actualizando = true;
+  this.incidenteService.actualizarEstado(
+    this.incidente.id,
+    'finalizado',
+    'Servicio finalizado por el taller'
+  ).subscribe({
+    next: () => {
+      this.mensaje = 'Servicio marcado como finalizado';
+      this.cargarIncidente(this.incidente.id);
+      this.actualizando = false;
+      this.cdr.detectChanges();
+    },
+    error: () => {
+      this.mensaje = 'Error al finalizar';
+      this.actualizando = false;
+    }
+  });
+}
 
   analizarConIA() {
     this.analizando = true;
@@ -137,6 +144,28 @@ export class DetalleIncidenteComponent implements OnInit, AfterViewInit {
       }
     });
   }
+  
+enviarCotizacion() {
+  this.enviandoCotizacion = true;
+  this.http.post(
+    `${environment.apiUrl}/cotizaciones/${this.incidente.id}`,
+    this.cotizacion
+  ).subscribe({
+    next: () => {
+      this.mensajeCotizacion = 'Cotización enviada al usuario';
+      this.mostrarFormCotizacion = false;
+      this.enviandoCotizacion = false;
+      this.cotizacion = { descripcion: '', monto_estimado: 0, tiempo_estimado_horas: 1 };
+      setTimeout(() => this.mensajeCotizacion = '', 3000);
+      this.cdr.detectChanges();
+    },
+    error: () => {
+      this.mensajeCotizacion = 'Error al enviar cotización';
+      this.enviandoCotizacion = false;
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   getPrioridadClass(prioridad: string): string {
     const clases: any = {
@@ -252,6 +281,8 @@ iniciarMapaDetalle() {
   ).addTo(this.mapaDetalle)
    .bindPopup('Ubicación del incidente')
    .openPopup();
+
+   
 }  
 
 }

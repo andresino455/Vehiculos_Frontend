@@ -1,0 +1,83 @@
+.layout { display: flex; min-height: 100vh; background: #f5f5f0; }
+.contenido { margin-left: 220px; flex: 1; padding: 2rem; }
+
+.page-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;
+  h1 { font-size: 20px; font-weight: 500; color: #1a1a1a; margin: 0 0 2px; }
+  p { font-size: 13px; color: #888; margin: 0; }
+}
+
+.btn-agregar {
+  padding: 9px 18px; background: #534AB7; color: white; border: none;
+  border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;
+  &:hover { background: #3C3489; }
+}
+
+.success-msg {
+  background: #f0fff4; color: #276749; border-radius: 8px;
+  padding: 10px 14px; font-size: 13px; margin-bottom: 16px;
+}
+
+.card { background: white; border: 0.5px solid #e0ddd6; border-radius: 12px; padding: 1.5rem; margin-bottom: 16px; }
+.formulario h2 { font-size: 15px; font-weight: 500; margin: 0 0 1rem; }
+
+.form-group {
+  margin-bottom: 1rem;
+  label { display: block; font-size: 12px; font-weight: 500; color: #444; margin-bottom: 5px; }
+  input {
+    width: 100%; padding: 9px 12px; border: 0.5px solid #ddd; border-radius: 8px;
+    font-size: 13px; outline: none; box-sizing: border-box;
+    &:focus { border-color: #534AB7; }
+  }
+}
+
+.btn-primary {
+  padding: 9px 20px; background: #534AB7; color: white; border: none;
+  border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;
+  &:hover:not(:disabled) { background: #3C3489; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.loading { text-align: center; color: #aaa; padding: 3rem; font-size: 13px; }
+
+.tenants-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+.tenant-card {
+  background: white; border: 0.5px solid #e0ddd6; border-radius: 12px; padding: 1.5rem;
+}
+
+.tenant-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+}
+
+.tenant-icon {
+  width: 44px; height: 44px; border-radius: 12px; background: #EEEDFE;
+  color: #534AB7; font-size: 20px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+.tenant-nombre { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+.tenant-desc { font-size: 12px; color: #888; margin-top: 2px; }
+
+.activo-badge {
+  margin-left: auto; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 500; background: #f0fff4; color: #276749;
+  &.inactivo { background: #fff0f0; color: #c53030; }
+}
+
+.tenant-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8px; margin-bottom: 14px;
+  border: 0.5px solid #eee; border-radius: 8px; padding: 12px;
+}
+
+.stat { text-align: center; }
+.stat-num { font-size: 20px; font-weight: 600; color: #534AB7; }
+.stat-lbl { font-size: 10px; color: #888; margin-top: 2px; }
+
+.tenant-id {
+  background: #f5f5f0; border-radius: 6px; padding: 8px 12px;
+  display: flex; align-items: center; gap: 8px;
+  .id-label { font-size: 11px; color: #888; }
+  code { font-size: 11px; color: #534AB7; font-family: monospace; word-break: break-all; }
+}

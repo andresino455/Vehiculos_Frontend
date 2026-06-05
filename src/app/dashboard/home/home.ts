@@ -8,6 +8,9 @@ import { TallerService } from '../../services/taller';
 import { WebsocketService } from '../../services/websocket.service';
 import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+
 
 const iconDefault = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -43,6 +46,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private tecnicoService: TecnicoService,
     private tallerService: TallerService,
     private wsService: WebsocketService,
+    private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -178,15 +182,25 @@ mostrarNotificacionNavegador(titulo: string, mensaje: string) {
     return clases[prioridad] || 'prioridad-media';
   }
 
-  getEstadoClass(estado: string): string {
-    const clases: any = {
-      pendiente: 'estado-pendiente',
-      en_proceso: 'estado-proceso',
-      atendido: 'estado-atendido'
-    };
-    return clases[estado] || '';
-  }
+getEstadoClass(estado: string): string {
+  const clases: any = {
+    buscando_taller: 'estado-buscando',
+    taller_asignado: 'estado-asignado',
+    en_camino: 'estado-camino',
+    en_atencion: 'estado-atencion',
+    finalizado: 'estado-finalizado',
+    cancelado: 'estado-cancelado',
+    pendiente: 'estado-pendiente'
+  };
+  return clases[estado] || '';
+}
 
+rechazarIncidente(id: string) {
+  this.http.post(`${environment.apiUrl}/incidentes/${id}/rechazar`, {motivo: 'No disponible'}).subscribe({
+    next: () => this.cargarIncidentes(),
+    error: (err) => alert(err.error?.detail || 'Error al rechazar')
+  });
+}
   aceptarIncidente(id: string) {
     this.incidenteService.asignarTaller(id).subscribe({
       next: () => this.cargarDatos(),

@@ -297,3 +297,47 @@
   color: #0F6E56;
   font-weight: 500;
 }
+.estado-buscando {
+  background: #E6F1FB;
+  color: #185FA5;
+}
+
+.estado-asignado {
+  background: #EEEDFE;
+  color: #534AB7;
+}
+
+.estado-camino {
+  background: #FAEEDA;
+  color: #633806;
+}
+
+.estado-atencion {
+  background: #EAF3DE;
+  color: #3B6D11;
+}
+
+.estado-finalizado {
+  background: #E1F5EE;
+  color: #085041;
+}
+
+.estado-cancelado {
+  background: #FCEBEB;
+  color: #A32D2D;
+}
+
+.btn-rechazar {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 0.5px solid #e53e3e;
+  background: white;
+  color: #e53e3e;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    background: #fff0f0;
+  }
+}

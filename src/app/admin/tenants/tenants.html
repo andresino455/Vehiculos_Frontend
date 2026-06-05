@@ -1,0 +1,82 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <main class="contenido">
+
+    <div class="page-header">
+      <div>
+        <h1>Multi-tenant</h1>
+        <p>Gestión de redes de talleres</p>
+      </div>
+      <button class="btn-agregar" (click)="mostrarFormulario = !mostrarFormulario">
+        {{ mostrarFormulario ? '✕ Cancelar' : '+ Nueva red' }}
+      </button>
+    </div>
+
+    <div class="success-msg" *ngIf="mensaje">{{ mensaje }}</div>
+
+    <!-- Formulario -->
+    <div class="card formulario" *ngIf="mostrarFormulario">
+      <h2>Nueva red de talleres</h2>
+      <div class="form-group">
+        <label>Nombre de la red *</label>
+        <input type="text" [(ngModel)]="nuevoTenant.nombre"
+          placeholder="Ej: Auxilio Norte, Mecánicos Express..." />
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <input type="text" [(ngModel)]="nuevoTenant.descripcion"
+          placeholder="Descripción opcional..." />
+      </div>
+      <button class="btn-primary" (click)="crearTenant()"
+        [disabled]="guardando || !nuevoTenant.nombre">
+        {{ guardando ? 'Creando...' : 'Crear red' }}
+      </button>
+    </div>
+
+    <!-- Lista de tenants -->
+    <div class="loading" *ngIf="cargando">Cargando redes...</div>
+
+    <div class="tenants-grid" *ngIf="!cargando">
+      <div class="tenant-card" *ngFor="let t of tenants">
+
+        <div class="tenant-header">
+          <div class="tenant-icon">{{ t.nombre[0] }}</div>
+          <div>
+            <div class="tenant-nombre">{{ t.nombre }}</div>
+            <div class="tenant-desc">{{ t.descripcion || 'Sin descripción' }}</div>
+          </div>
+          <span class="activo-badge" [class.inactivo]="!t.activo">
+            {{ t.activo ? 'Activo' : 'Inactivo' }}
+          </span>
+        </div>
+
+        <div class="tenant-stats" *ngIf="estadisticas[t.id]">
+          <div class="stat">
+            <div class="stat-num">{{ estadisticas[t.id].total_talleres }}</div>
+            <div class="stat-lbl">Talleres</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">{{ estadisticas[t.id].total_usuarios }}</div>
+            <div class="stat-lbl">Usuarios</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">{{ estadisticas[t.id].total_incidentes }}</div>
+            <div class="stat-lbl">Incidentes</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">{{ estadisticas[t.id].tasa_finalizacion }}%</div>
+            <div class="stat-lbl">Finalización</div>
+          </div>
+        </div>
+
+        <div class="tenant-id">
+          <span class="id-label">ID:</span>
+          <code>{{ t.id }}</code>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>

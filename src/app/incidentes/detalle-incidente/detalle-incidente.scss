@@ -431,3 +431,33 @@
   border: 0.5px solid #eee;
   margin-top: 8px;
 }
+.btn-cotizar {
+  width: 100%;
+  padding: 10px;
+  background: #FAEEDA;
+  color: #633806;
+  border: 0.5px solid #BA7517;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #F5E0C0;
+  }
+}
+
+.btn-cancelar {
+  padding: 10px 16px;
+  background: white;
+  color: #888;
+  border: 0.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+}
