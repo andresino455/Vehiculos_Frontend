@@ -34,6 +34,14 @@
       </div>
 
       <div class="form-group">
+        <label>Red de talleres (tenant)</label>
+        <select [(ngModel)]="datos.tenant_id" name="tenant_id" class="select-tenant">
+          <option *ngFor="let t of tenants" [value]="t.id">{{ t.nombre }}</option>
+        </select>
+        <small class="hint">Seleccioná la red a la que pertenece tu taller</small>
+      </div>
+
+      <div class="form-group">
         <label>Ubicación del taller</label>
         <p class="map-hint">Hacé clic en el mapa para marcar la ubicación exacta</p>
         <div id="mapa-registro" class="mapa"></div>

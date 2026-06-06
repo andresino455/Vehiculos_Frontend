@@ -21,20 +21,21 @@ export class HistorialAtencionesComponent implements OnInit {
   filtroEstado = 'todos';
   busqueda = '';
 
-  stats = {
-    total: 0,
-    atendidos: 0,
-    cancelados: 0,
-  };
+  stats = { total: 0, finalizados: 0, cancelados: 0, enProceso: 0 };
 
-  constructor(
-    private http: HttpClient,
-    private cdr: ChangeDetectorRef
-  ) {}
+  estados = [
+    { valor: 'todos', label: 'Todos' },
+    { valor: 'buscando_taller', label: 'Buscando taller' },
+    { valor: 'taller_asignado', label: 'Taller asignado' },
+    { valor: 'en_camino', label: 'En camino' },
+    { valor: 'en_atencion', label: 'En atención' },
+    { valor: 'finalizado', label: 'Finalizados' },
+    { valor: 'cancelado', label: 'Cancelados' },
+  ];
 
-  ngOnInit() {
-    this.cargar();
-  }
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit() { this.cargar(); }
 
   cargar() {
     this.cargando = true;
@@ -46,27 +47,24 @@ export class HistorialAtencionesComponent implements OnInit {
         this.cargando = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Error:', err);
-        this.cargando = false;
-        this.cdr.detectChanges();
-      }
+      error: () => { this.cargando = false; this.cdr.detectChanges(); }
     });
   }
 
   calcularStats() {
     this.stats.total = this.incidentes.length;
-    this.stats.atendidos = this.incidentes.filter(i => i.estado === 'atendido').length;
+    this.stats.finalizados = this.incidentes.filter(i => i.estado === 'finalizado').length;
     this.stats.cancelados = this.incidentes.filter(i => i.estado === 'cancelado').length;
+    this.stats.enProceso = this.incidentes.filter(i =>
+      ['taller_asignado', 'en_camino', 'en_atencion'].includes(i.estado)
+    ).length;
   }
 
   filtrar() {
     let resultado = this.incidentes;
-
     if (this.filtroEstado !== 'todos') {
       resultado = resultado.filter(i => i.estado === this.filtroEstado);
     }
-
     if (this.busqueda.trim()) {
       const b = this.busqueda.toLowerCase();
       resultado = resultado.filter(i =>
@@ -75,28 +73,38 @@ export class HistorialAtencionesComponent implements OnInit {
         (i.resumen_ia || '').toLowerCase().includes(b)
       );
     }
-
     this.incidentesFiltrados = resultado;
     this.cdr.detectChanges();
   }
 
-  getPrioridadClass(prioridad: string): string {
+  getEstadoClass(estado: string): string {
     const clases: any = {
-      alta: 'prioridad-alta',
-      media: 'prioridad-media',
-      baja: 'prioridad-baja'
+      buscando_taller: 'e-buscando',
+      taller_asignado: 'e-asignado',
+      en_camino: 'e-camino',
+      en_atencion: 'e-atencion',
+      finalizado: 'e-finalizado',
+      cancelado: 'e-cancelado',
+      pendiente: 'e-pendiente'
     };
+    return clases[estado] || '';
+  }
+
+  getEstadoLabel(estado: string): string {
+    return estado.replaceAll('_', ' ');
+  }
+
+  getPrioridadClass(prioridad: string): string {
+    const clases: any = { alta: 'prioridad-alta', media: 'prioridad-media', baja: 'prioridad-baja' };
     return clases[prioridad] || 'prioridad-media';
   }
 
-  getEstadoClass(estado: string): string {
-    const clases: any = {
-      atendido: 'estado-atendido',
-      cancelado: 'estado-cancelado',
-      en_proceso: 'estado-proceso',
-      pendiente: 'estado-pendiente'
+  getTipoIcon(tipo: string): string {
+    const iconos: any = {
+      bateria: '🔋', llanta: '🔧', choque: '💥',
+      motor: '⚙️', otros: '🚗', incierto: '❓'
     };
-    return clases[estado] || '';
+    return iconos[tipo] || '🚗';
   }
 
   formatFecha(fecha: string): string {
@@ -107,16 +115,4 @@ export class HistorialAtencionesComponent implements OnInit {
       hour: '2-digit', minute: '2-digit'
     });
   }
-
-  getTipoIcon(tipo: string): string {
-  const iconos: any = {
-    bateria: '🔋',
-    llanta: '🔧',
-    choque: '💥',
-    motor: '⚙️',
-    otros: '🚗',
-    incierto: '❓'
-  };
-  return iconos[tipo] || '🚗';
-}
 }

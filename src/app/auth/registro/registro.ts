@@ -2,7 +2,9 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
+import { environment } from '../../../environments/environment';
 import * as L from 'leaflet';
 
 const iconDefault = L.icon({
@@ -19,7 +21,7 @@ const iconDefault = L.icon({
   templateUrl: './registro.html',
   styleUrls: ['./registro.scss']
 })
-export class RegistroComponent implements AfterViewInit {
+export class RegistroComponent implements OnInit, AfterViewInit {
 
   datos = {
     nombre: '',
@@ -30,9 +32,11 @@ export class RegistroComponent implements AfterViewInit {
     latitud: null as number | null,
     longitud: null as number | null,
     tipos_servicio: [] as string[],
-    capacidad_max: 1
+    capacidad_max: 1,
+    tenant_id: ''
   };
 
+  tenants: any[] = [];
   error = '';
   cargando = false;
   serviciosDisponibles = ['bateria', 'llanta', 'motor', 'remolque', 'choque', 'general'];
@@ -40,11 +44,33 @@ export class RegistroComponent implements AfterViewInit {
   private map!: L.Map;
   private marker!: L.Marker;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private http: HttpClient
+  ) {}
+
+  ngOnInit() {
+    this.cargarTenants();
+  }
 
   ngAfterViewInit() {
-    this.map = L.map('mapa-registro').setView([-17.7833, -63.1821], 13);
+    setTimeout(() => this.iniciarMapa(), 300);
+  }
 
+  cargarTenants() {
+    this.http.get<any[]>(`${environment.apiUrl}/tenants/publicos`).subscribe({
+      next: (data) => {
+        this.tenants = data;
+        if (data.length > 0) this.datos.tenant_id = data[0].id;
+      },
+      error: () => {}
+    });
+  }
+
+  iniciarMapa() {
+    if (this.map) return;
+    this.map = L.map('mapa-registro').setView([-17.7833, -63.1821], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap'
     }).addTo(this.map);
@@ -53,7 +79,6 @@ export class RegistroComponent implements AfterViewInit {
       const { lat, lng } = e.latlng;
       this.datos.latitud = parseFloat(lat.toFixed(6));
       this.datos.longitud = parseFloat(lng.toFixed(6));
-
       if (this.marker) {
         this.marker.setLatLng(e.latlng);
       } else {
@@ -69,11 +94,8 @@ export class RegistroComponent implements AfterViewInit {
 
   toggleServicio(servicio: string) {
     const idx = this.datos.tipos_servicio.indexOf(servicio);
-    if (idx > -1) {
-      this.datos.tipos_servicio.splice(idx, 1);
-    } else {
-      this.datos.tipos_servicio.push(servicio);
-    }
+    if (idx > -1) this.datos.tipos_servicio.splice(idx, 1);
+    else this.datos.tipos_servicio.push(servicio);
   }
 
   tieneServicio(servicio: string): boolean {
@@ -90,7 +112,7 @@ export class RegistroComponent implements AfterViewInit {
     this.authService.registroTaller(this.datos).subscribe({
       next: () => this.router.navigate(['/auth/login']),
       error: (err) => {
-        this.error = err.error?.detail || 'Error al registrar. Intentá de nuevo.';
+        this.error = err.error?.detail || 'Error al registrar.';
         this.cargando = false;
       }
     });

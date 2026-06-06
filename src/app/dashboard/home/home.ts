@@ -54,12 +54,12 @@ ngOnInit() {
   this.cargarDatos();
   this.solicitarPermisoNotificaciones();
   this.pollingInterval = setInterval(() => {
-    const cantidadAnterior = this.incidentesPendientes.filter(i => i.estado === 'pendiente').length;
+    const cantidadAnterior = this.incidentesPendientes.filter(i => i.estado === 'buscando_taller').length;
     this.incidenteService.getDisponibles().subscribe({
       next: (incidentes) => {
-        const cantidadNueva = incidentes.filter((i: any) => i.estado === 'pendiente').length;
+        const cantidadNueva = incidentes.filter((i: any) => i.estado === 'buscando_taller').length;
         if (cantidadNueva > cantidadAnterior) {
-          this.mostrarNotificacionNavegador('Nueva emergencia', 'Hay un nuevo incidente pendiente');
+          this.mostrarNotificacionNavegador('Nueva emergencia', 'Hay un nuevo incidente ');
         }
         this.incidentesPendientes = incidentes;
         this.cdr.detectChanges();
@@ -168,8 +168,8 @@ mostrarNotificacionNavegador(titulo: string, mensaje: string) {
 
   get stats() {
     return {
-      pendientes: this.incidentesPendientes.filter(i => i.estado === 'pendiente').length,
-      enProceso: this.incidentesPendientes.filter(i => i.estado === 'en_proceso').length,
+      pendientes: this.incidentesPendientes.filter(i => i.estado === 'buscando_taller').length,
+      enProceso: this.incidentesPendientes.filter(i => i.estado === 'en_camino' || i.estado === 'en_atencion' ).length,
     };
   }
 

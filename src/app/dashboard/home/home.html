@@ -11,98 +11,93 @@
       <button class="btn-refresh" (click)="cargarDatos()">↻ Actualizar</button>
     </div>
 
+    <!-- Notificaciones WS -->
     <div class="notif-panel" *ngIf="notificaciones.length > 0">
-  <div class="notif-item" *ngFor="let n of notificaciones.slice(0, 3)">
-    <span class="notif-dot" [class.rojo]="n.tipo === 'nuevo_incidente'"></span>
-    <div>
-      <div class="notif-titulo">{{ n.titulo }}</div>
-      <div class="notif-msg">{{ n.mensaje }}</div>
-    </div>
-  </div>
-</div>
+      <div class="notif-item" *ngFor="let n of notificaciones.slice(0,3)">
+        <span class="notif-dot" [class.rojo]="n.tipo === 'nuevo_incidente'"></span>
+        <div>
+          <div class="notif-titulo">{{ n.titulo }}</div>
+          <div class="notif-msg">{{ n.mensaje }}</div>
+        </div>
+      </div>
+      </div>
+
     <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-valor">{{ stats.pendientes }}</div>
-        <div class="stat-label">Pendientes</div>
-        <div class="stat-dot pendiente"></div>
+        <div class="stat-label">Buscando taller</div>
+        <div class="stat-dot" style="background:#185FA5"></div>
       </div>
       <div class="stat-card">
         <div class="stat-valor">{{ stats.enProceso }}</div>
         <div class="stat-label">En proceso</div>
-        <div class="stat-dot proceso"></div>
+        <div class="stat-dot" style="background:#534AB7"></div>
       </div>
       <div class="stat-card">
         <div class="stat-valor">{{ tecnicos.length }}</div>
         <div class="stat-label">Técnicos</div>
-        <div class="stat-dot tecnico"></div>
+        <div class="stat-dot" style="background:#1D9E75"></div>
       </div>
       <div class="stat-card">
         <div class="stat-valor">{{ tecnicosDisponibles }}</div>
         <div class="stat-label">Disponibles</div>
-        <div class="stat-dot disponible"></div>
+        <div class="stat-dot" style="background:#48bb78"></div>
       </div>
     </div>
 
     <div class="grid-dos-col">
 
-<!-- Incidentes pendientes -->
-<div class="card">
-  <div class="card-header">
-    <h2>Solicitudes</h2>
-    <span class="badge-count">{{ incidentesPendientes.length }}</span>
-  </div>
+      <!-- Solicitudes -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Solicitudes activas</h2>
+          <span class="badge-count">{{ incidentesPendientes.length }}</span>
+          </div>
 
-  <div class="loading" *ngIf="cargando">Cargando...</div>
+        <div class="loading" *ngIf="cargando">Cargando...</div>
 
-  <div class="empty" *ngIf="!cargando && incidentesPendientes.length === 0">
-    No hay solicitudes activas por ahora
-  </div>
+        <div class="empty" *ngIf="!cargando && incidentesPendientes.length === 0">
+          No hay solicitudes activas por ahora
+        </div>
 
-  <div class="incidente-item" *ngFor="let inc of incidentesPendientes">
-    <div class="incidente-top">
-      <span class="tipo-badge">{{ inc.tipo_problema || 'Sin clasificar' }}</span>
-      <span class="prioridad-badge" [class]="getPrioridadClass(inc.prioridad)">
-        {{ inc.prioridad }}
-      </span>
-    </div>
+        <div class="incidente-item" *ngFor="let inc of incidentesPendientes">
+          <div class="incidente-top">
+            <span class="tipo-badge">{{ inc.tipo_problema || 'Sin clasificar' }}</span>
+            <span class="prioridad-badge" [class]="getPrioridadClass(inc.prioridad)">
+              {{ inc.prioridad }}
+            </span>
+          </div>
 
-    <div class="incidente-desc">{{ inc.descripcion_texto || 'Sin descripción' }}</div>
+          <div class="incidente-desc">{{ inc.descripcion_texto || 'Sin descripción' }}</div>
 
-    <div class="incidente-coords">
-      📍 {{ inc.latitud | number:'1.4-4' }}, {{ inc.longitud | number:'1.4-4' }}
-    </div>
+          <div class="ia-resumen" *ngIf="inc.resumen_ia">
+            <span class="ia-icon">✦</span> {{ inc.resumen_ia | slice:0:80 }}...
+          </div>
 
-    <!-- Resumen IA si existe -->
-    <div class="ia-resumen" *ngIf="inc.resumen_ia">
-      <span class="ia-icon">✦</span> {{ inc.resumen_ia }}
-    </div>
+          <div class="incidente-coords">
+            📍 {{ inc.latitud | number:'1.4-4' }}, {{ inc.longitud | number:'1.4-4' }}
+          </div>
 
-    <div class="incidente-footer">
-      <span class="estado-badge" [class]="getEstadoClass(inc.estado)">
-        {{ inc.estado }}
-      </span>
-      <div class="incidente-acciones">
-        <a [routerLink]="['/dashboard/incidentes', inc.id]" class="btn-ver">
-          Ver detalle
-        </a>
-        <button
-          class="btn-aceptar"
-          (click)="aceptarIncidente(inc.id)"
-          *ngIf="inc.estado === 'pendiente'"
-        >
-          Aceptar
-        </button>
-        <button class="btn-rechazar" (click)="rechazarIncidente(inc.id)" *ngIf="inc.estado === 'buscando_taller'">
-          Rechazar
-        </button>
-        <span class="en-proceso-label" *ngIf="inc.estado === 'en_proceso'">
-          En atención
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
+          <div class="incidente-footer">
+            <span class="estado-badge" [class]="getEstadoClass(inc.estado)">
+              {{ inc.estado.replaceAll('_', ' ') }}
+              </span>
+              <div class="incidente-acciones">
+              <a [routerLink]="['/dashboard/incidentes', inc.id]" class="btn-ver">Ver</a>
+              <button class="btn-aceptar" (click)="aceptarIncidente(inc.id)" *ngIf="inc.estado === 'buscando_taller'">
+                Aceptar
+              </button>
+              <button class="btn-rechazar" (click)="rechazarIncidente(inc.id)" *ngIf="inc.estado === 'buscando_taller'">
+                Rechazar
+              </button>
+              <span class="en-proceso-label" *ngIf="['taller_asignado','en_camino','en_atencion'].includes(inc.estado)">
+                En atención
+              </span>
+              </div>
+              </div>
+              </div>
+              </div>
 
       <!-- Mapa técnicos -->
       <div class="card">
@@ -119,9 +114,7 @@
             </div>
             <span class="estado-tecnico" [class]="t.estado">{{ t.estado }}</span>
           </div>
-          <div class="empty" *ngIf="tecnicos.length === 0">
-            No hay técnicos registrados
-          </div>
+          <div class="empty" *ngIf="tecnicos.length === 0">No hay técnicos</div>
         </div>
       </div>
 

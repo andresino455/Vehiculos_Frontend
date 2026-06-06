@@ -153,3 +153,23 @@
     &:hover { text-decoration: underline; }
   }
 }
+.select-tenant {
+  width: 100%;
+  padding: 10px 14px;
+  border: 0.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background: white;
+
+  &:focus {
+    border-color: #534AB7;
+  }
+}
+
+.hint {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 4px;
+  display: block;
+}

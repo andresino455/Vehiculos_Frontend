@@ -16,17 +16,22 @@
       <div class="stat-card">
         <div class="stat-valor">{{ stats.total }}</div>
         <div class="stat-label">Total gestionados</div>
-        <div class="stat-dot total"></div>
+        <div class="stat-dot" style="background:#534AB7"></div>
       </div>
       <div class="stat-card">
-        <div class="stat-valor">{{ stats.atendidos }}</div>
-        <div class="stat-label">Atendidos</div>
-        <div class="stat-dot atendido"></div>
+        <div class="stat-valor">{{ stats.enProceso }}</div>
+        <div class="stat-label">En proceso</div>
+        <div class="stat-dot" style="background:#BA7517"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-valor">{{ stats.finalizados }}</div>
+          <div class="stat-label">Finalizados</div>
+          <div class="stat-dot" style="background:#1D9E75"></div>
       </div>
       <div class="stat-card">
         <div class="stat-valor">{{ stats.cancelados }}</div>
         <div class="stat-label">Cancelados</div>
-        <div class="stat-dot cancelado"></div>
+        <div class="stat-dot" style="background:#e53e3e"></div>
       </div>
     </div>
 
@@ -41,28 +46,23 @@
       />
       <div class="filtro-tabs">
         <button
-          *ngFor="let f of [
-            {valor: 'todos', label: 'Todos'},
-            {valor: 'atendido', label: 'Atendidos'},
-            {valor: 'en_proceso', label: 'En proceso'},
-            {valor: 'cancelado', label: 'Cancelados'}
-          ]"
-          [class.activo]="filtroEstado === f.valor"
-          (click)="filtroEstado = f.valor; filtrar()"
+          *ngFor="let e of estados"
+          [class.activo]="filtroEstado === e.valor"
+          (click)="filtroEstado = e.valor; filtrar()"
           class="filtro-btn"
         >
-          {{ f.label }}
+          {{ e.label }}
         </button>
       </div>
     </div>
 
-    <!-- Lista -->
+    <!-- Tabla -->
     <div class="card">
       <div class="loading" *ngIf="cargando">Cargando historial...</div>
 
       <div class="empty" *ngIf="!cargando && incidentesFiltrados.length === 0">
-        <span style="font-size: 32px">📋</span>
-        <p>No hay incidentes que coincidan con el filtro</p>
+        <span style="font-size:32px">📋</span>
+        <p>No hay incidentes que coincidan</p>
       </div>
 
       <div class="tabla" *ngIf="!cargando && incidentesFiltrados.length > 0">
@@ -77,14 +77,12 @@
 
         <div class="tabla-fila" *ngFor="let inc of incidentesFiltrados">
           <div class="tipo-col">
-            <div class="tipo-icon">
-              <span>{{ getTipoIcon(inc.tipo_problema) }}</span>
-            </div>
+            <div class="tipo-icon">{{ getTipoIcon(inc.tipo_problema) }}</div>
             <span class="tipo-texto">{{ inc.tipo_problema || 'Sin clasificar' }}</span>
           </div>
 
           <div class="desc-col">
-            <span>{{ inc.descripcion_texto || inc.resumen_ia || 'Sin descripción' | slice:0:60 }}...</span>
+            {{ (inc.descripcion_texto || inc.resumen_ia || 'Sin descripción') | slice:0:60 }}...
           </div>
 
           <span class="prioridad-badge" [class]="getPrioridadClass(inc.prioridad)">
@@ -92,7 +90,7 @@
           </span>
 
           <span class="estado-badge" [class]="getEstadoClass(inc.estado)">
-            {{ inc.estado.replaceAll('_', ' ') }}
+            {{ getEstadoLabel(inc.estado) }}
           </span>
 
           <span class="fecha-col">{{ formatFecha(inc.creado_en) }}</span>
