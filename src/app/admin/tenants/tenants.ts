@@ -21,7 +21,7 @@ export class TenantsComponent implements OnInit {
   guardando = false;
   mensaje = '';
 
-  nuevoTenant = { nombre: '', descripcion: '' };
+  nuevoTenant = { nombre: '', descripcion: '', codigo: '' };
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
@@ -58,7 +58,7 @@ export class TenantsComponent implements OnInit {
       next: () => {
         this.mensaje = 'Tenant creado correctamente';
         this.mostrarFormulario = false;
-        this.nuevoTenant = { nombre: '', descripcion: '' };
+        this.nuevoTenant = { nombre: '', descripcion: '', codigo: '' };
         this.guardando = false;
         this.cargar();
         setTimeout(() => this.mensaje = '', 3000);

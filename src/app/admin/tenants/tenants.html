@@ -28,6 +28,11 @@
         <input type="text" [(ngModel)]="nuevoTenant.descripcion"
           placeholder="Descripción opcional..." />
       </div>
+      <div class="form-group">
+        <label>Código de red</label>
+        <input type="text" [(ngModel)]="nuevoTenant.codigo" placeholder="Ej: EMPRESA01" style="text-transform: uppercase" />
+        <small style="color: #888">Los usuarios usarán este código al registrarse</small>
+      </div>
       <button class="btn-primary" (click)="crearTenant()"
         [disabled]="guardando || !nuevoTenant.nombre">
         {{ guardando ? 'Creando...' : 'Crear red' }}
@@ -73,6 +78,11 @@
         <div class="tenant-id">
           <span class="id-label">ID:</span>
           <code>{{ t.id }}</code>
+        </div>
+
+        <div class="tenant-id" *ngIf="t.codigo">
+          <span class="id-label">Código:</span>
+          <code>{{ t.codigo }}</code>
         </div>
 
       </div>
