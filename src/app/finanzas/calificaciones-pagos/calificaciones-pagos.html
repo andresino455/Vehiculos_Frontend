@@ -129,22 +129,26 @@
         </div>
 
         <div class="tabla" *ngIf="pagos.length > 0">
-          <div class="tabla-header">
-            <span>Fecha</span>
-            <span>Total</span>
-            <span>Comisión</span>
-            <span>Recibido</span>
-            <span>Método</span>
-            <span>Estado</span>
-          </div>
-          <div class="tabla-fila" *ngFor="let p of pagos">
-            <span class="fecha-col">{{ formatFecha(p.creado_en) }}</span>
-            <span>Bs. {{ p.monto_total | number:'1.2-2' }}</span>
-            <span class="comision-col">- Bs. {{ p.comision_plataforma | number:'1.2-2' }}</span>
-            <span class="neto-col">Bs. {{ p.monto_taller | number:'1.2-2' }}</span>
-            <span class="metodo-badge">{{ p.metodo_pago || '—' }}</span>
-            <span class="estado-badge" [class]="'pago-' + p.estado">{{ p.estado }}</span>
-          </div>
+<div class="tabla-header">
+  <span>Fecha</span>
+  <span>Incidente</span> <!-- ← agregar -->
+  <span>Total</span>
+  <span>Comisión</span>
+  <span>Recibido</span>
+  <span>Método</span>
+  <span>Estado</span>
+  </div>
+  <div class="tabla-fila" *ngFor="let p of pagos">
+    <span class="fecha-col">{{ formatFecha(p.creado_en) }}</span>
+  <span class="incidente-col" title="{{ p.incidente_direccion }}">
+    {{ p.incidente_descripcion || '—' }}
+  </span> <!-- ← agregar -->
+  <span>Bs. {{ p.monto_total | number:'1.2-2' }}</span>
+  <span class="comision-col">- Bs. {{ p.comision_plataforma | number:'1.2-2' }}</span>
+  <span class="neto-col">Bs. {{ p.monto_taller | number:'1.2-2' }}</span>
+  <span class="metodo-badge">{{ p.metodo_pago || '—' }}</span>
+  <span class="estado-badge" [class]="'pago-' + p.estado">{{ p.estado }}</span>
+  </div>
         </div>
       </div>
 
